@@ -11,7 +11,11 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
+import Cards.*;
+
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -88,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         TextView txvLog;
         txvLog=findViewById(R.id.txtLog);
 
-        TextView txvLo2;
+        EditText txvLo2;
         txvLo2=findViewById(R.id.txtLOG2);
 
         //new date();
@@ -97,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
 //        txvLog.setText(txvLog.getText()+ "\r\n" + StrLog);
         txvLo2.setText(txvLo2.getText()+ "\n" + StrLog);
 //        txvLo2.setMovementMethod(ScrollingMovementMethod.getInstance());
+//        txvLo2.moveCursorToVisibleOffset();
+          txvLo2.setSelection(txvLo2.length());
     }
     public void Test(){
 
@@ -114,4 +120,30 @@ public class MainActivity extends AppCompatActivity {
         txv=findViewById(R.id.txtHello);
         txv.setText(String.valueOf(intDiceRst));
     }
+
+    public void ShowNow(View V){
+        TextView txvTime;
+        String strNow;
+
+        Date dt=new Date();
+
+        strNow=dt.toGMTString();
+//        strNow=dt.toLocaleString();
+
+        txvTime=findViewById(R.id.txtTime);
+        txvTime.setText(strNow);
+    }
+
+    public  void CreateCards(View V){
+
+        TextView txv;
+        txv=findViewById(R.id.txtHello);
+
+        Cards cards;
+        cards = new Cards(10);
+
+        txv.setText(cards.msg + " : " + cards.count);
+
+    }
+
 }
