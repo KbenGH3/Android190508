@@ -10,10 +10,22 @@
     tools:layout_editor_absoluteY="56dp"
     tools:showIn="@layout/activity_main">
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="CardShuffle"
+        android:text="Shuffle"
+        app:layout_constraintBottom_toTopOf="@+id/btnDice"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/txtHello"
         style="@android:style/Widget.DeviceDefault.TextView"
-        android:layout_width="360dp"
+        android:layout_width="200dp"
         android:layout_height="25dp"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
@@ -128,5 +140,63 @@
         android:text="LogText："
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtHello" />
+
+    <TextView
+        android:id="@+id/txtTime"
+        android:layout_width="100dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginRight="28dp"
+        android:text="Time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtHello" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="ShowNow"
+        android:text="Now"
+        app:layout_constraintBottom_toTopOf="@+id/btnHello"
+        app:layout_constraintStart_toEndOf="@+id/btnDice" />
+
+    <Button
+        android:id="@+id/btnCards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="CreateCards"
+        android:text="Cards"
+        app:layout_constraintBottom_toTopOf="@+id/btnLog"
+        app:layout_constraintStart_toEndOf="@+id/button" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="CardShuffle"
+        android:text="Shuffle"
+        app:layout_constraintBottom_toTopOf="@+id/btnDice"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnDeal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="CardDeal"
+        android:text="Deal"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintStart_toEndOf="@+id/button3" />
 
 </android.support.constraint.ConstraintLayout>

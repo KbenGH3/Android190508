@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 import Cards.*;
+import Player.*;
 
 import java.util.Date;
 
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //输出日志
     public void addLog(View V){
 
         String StrLog;
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //骰子
     public void Dice(View V){
         TextView txv;
         int intDiceRst;
@@ -121,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         txv.setText(String.valueOf(intDiceRst));
     }
 
+    //显示时间
     public void ShowNow(View V){
         TextView txvTime;
         String strNow;
@@ -134,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         txvTime.setText(strNow);
     }
 
+    //生成牌
     public  void CreateCards(View V){
 
         TextView txv;
@@ -142,7 +147,71 @@ public class MainActivity extends AppCompatActivity {
         Cards cards;
         cards = new Cards(10);
 
-        txv.setText(cards.msg + " : " + cards.count);
+        txv.setText(cards.msg + " : " + cards.count + "  id of card 1 :" + cards.allCard[0].card_id);
+
+    }
+
+    //洗牌
+    public  void  CardShuffle(View V){
+
+        int i;
+        TextView txv;
+        txv=findViewById(R.id.txtHello);
+
+        Cards cards;
+        cards = new Cards(10);
+        cards.shuffle();
+
+        for(i=0;i<cards.count;i++){
+            txv.setText( txv.getText() + "," + String.valueOf(cards.allCard[i].card_id));
+        }
+    }
+
+    //派牌
+    public  void  CardDeal(View V){
+
+        int i;
+        int j;
+
+        //通过日志框输出
+        TextView txv;
+        txv=findViewById(R.id.txtHello);
+
+        Cards cards;
+        cards = new Cards(54);
+        cards.shuffle();
+
+        Players players;
+        players = new Players( 4);
+
+        j=0;
+        for(i=0;i<cards.count;i++){
+
+            if(j==players.count){ j=0;}
+            cards.allCard[i].owner=String.valueOf(players.allPlayer[j].player_id);
+            j++;
+        }
+
+
+        //输出
+        EditText txvLo2;
+        txvLo2=findViewById(R.id.txtLOG2);
+
+        String StrLog;
+        StrLog="Player1: ";
+        txvLo2.setText(txvLo2.getText()+ "\n" + StrLog);
+        txvLo2.setSelection(txvLo2.length());
+
+
+        for(i=0;i<cards.count;i++){
+
+            //只输出 player【1】
+            if (cards.allCard[i].owner==String.valueOf(players.allPlayer[1].player_id)){
+                txvLo2.setText(txvLo2.getText()+ " ," +  String.valueOf(cards.allCard[i].card_id));
+            }
+
+        }
+
 
     }
 
