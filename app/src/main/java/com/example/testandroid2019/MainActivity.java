@@ -1,5 +1,7 @@
 package com.example.testandroid2019;
 
+
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,7 +18,10 @@ import android.widget.TextView;
 import Cards.*;
 import Player.*;
 
+import java.io.InputStream;
 import java.util.Date;
+import java.util.Properties;
+import java.io.FileInputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //输入框
     public void Ipnut(View V){
 
         String strInput;
@@ -91,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
     public void addLog(View V){
 
         String StrLog;
-        TextView txvLog;
-        txvLog=findViewById(R.id.txtLog);
+//        TextView txvLog;
+//        txvLog=findViewById(R.id.txtLog);
 
         EditText txvLo2;
         txvLo2=findViewById(R.id.txtLOG2);
@@ -131,7 +137,8 @@ public class MainActivity extends AppCompatActivity {
 
         Date dt=new Date();
 
-        strNow=dt.toGMTString();
+        strNow=dt.toLocaleString();
+
 //        strNow=dt.toLocaleString();
 
         txvTime=findViewById(R.id.txtTime);
@@ -210,6 +217,48 @@ public class MainActivity extends AppCompatActivity {
                 txvLo2.setText(txvLo2.getText()+ " ," +  String.valueOf(cards.allCard[i].card_id));
             }
 
+        }
+
+        //显示最后一行
+        txvLo2.setSelection(txvLo2.length());
+
+    }
+
+    //读取配置文件
+    public void ReadConfig(View V){
+
+//        Context mContext;
+
+        String strInput;
+        TextView txvInput;
+        txvInput=findViewById(R.id.txtInput);
+
+        //读取输入框 文本内容
+        strInput= String.valueOf(txvInput.getText());
+
+        TextView txvHello;
+        txvHello=findViewById(R.id.txtHello);
+
+        Properties pro=new Properties();
+
+        //FileInputStream 必须要异常处理
+        try{
+            //InputStream is =  this.getClassLoader().getResourceAsStream("appConfig");//attempt to invoke virtual method
+            //InputStream ip = new FileInputStream(strInput); //no such file or directory
+            //InputStream pj = project.rootProject.file('local.properties').newDataInputStream() ;
+
+//            //获取context
+//            mContext = getApplicationContext();
+            //只有在assets 目录下才能获取成功
+            InputStream ct = getAssets().open("appConfigAssets");
+
+            //InputStream in = new FileInputStream("/data/data/Cards");
+
+            pro.load(ct);
+            txvHello.setText(pro.getProperty("helloKey"));
+
+        }catch (Exception e){
+            txvHello.setText(e.getMessage());
         }
 
 

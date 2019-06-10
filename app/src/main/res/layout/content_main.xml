@@ -25,8 +25,8 @@
     <TextView
         android:id="@+id/txtHello"
         style="@android:style/Widget.DeviceDefault.TextView"
-        android:layout_width="200dp"
-        android:layout_height="25dp"
+        android:layout_width="373dp"
+        android:layout_height="0dp"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
         android:layout_marginTop="20dp"
@@ -72,20 +72,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/txtLog"
-        android:layout_width="360dp"
-        android:layout_height="58dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="LogText："
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtHello" />
-
     <Button
         android:id="@+id/btnLog"
         android:layout_width="wrap_content"
@@ -125,11 +111,11 @@
 
     <EditText
         android:id="@+id/txtLOG2"
-        android:layout_width="348dp"
-        android:layout_height="114dp"
+        android:layout_width="356dp"
+        android:layout_height="191dp"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="60dp"
         android:ems="10"
         android:focusable="false"
         android:focusableInTouchMode="false"
@@ -143,13 +129,14 @@
 
     <TextView
         android:id="@+id/txtTime"
-        android:layout_width="100dp"
-        android:layout_height="22dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginRight="28dp"
+        android:layout_width="373dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="20dp"
         android:text="Time"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txtHello" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtHello" />
 
     <Button
         android:id="@+id/button"
@@ -198,5 +185,28 @@
         android:text="Deal"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintStart_toEndOf="@+id/button3" />
+
+    <Button
+        android:id="@+id/btnProperty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="ReadConfig"
+        android:text="Property"
+        app:layout_constraintBottom_toTopOf="@+id/btnCards"
+        app:layout_constraintStart_toEndOf="@+id/btnDeal" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginBottom="20dp"
+        android:text="Save"
+        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
