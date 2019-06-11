@@ -2,6 +2,7 @@ package com.example.testandroid2019;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,10 +16,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import Cards.*;
 import Player.*;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.Properties;
 import java.io.FileInputStream;
@@ -261,6 +267,85 @@ public class MainActivity extends AppCompatActivity {
             txvHello.setText(e.getMessage());
         }
 
+
+    }
+
+    //存储数据
+    public void saveData(View V){
+
+
+        SharedPreferences sp;
+
+        String strInput;
+        TextView txvInput;
+        txvInput=findViewById(R.id.txtInput);
+
+        //读取输入框 文本内容
+        strInput= String.valueOf(txvInput.getText());
+
+        TextView txvHello;
+        txvHello=findViewById(R.id.txtHello);
+
+        Properties pro=new Properties();
+
+        //FileInputStream 必须要异常处理
+        try{
+
+            //只有在assets 目录下才能获取成功
+            InputStream ct = getAssets().open("appConfigAssets");
+
+            pro.load(ct);
+
+            //取得AndroidData 如果不存在，直接新建
+            sp=getSharedPreferences("AndroidData",MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+
+            Cards cards;
+            cards = new Cards(50);
+
+            //通过GSON保存对象
+            Gson gson = new Gson();
+            String json = gson.toJson(cards);
+
+
+            editor.putString("helloKey",pro.getProperty("helloKey"));
+            editor.putString("cards",json);
+            editor.commit();
+
+            Cards cardSaved;
+            String GetJson;
+            Type type = new TypeToken<Cards>() {}.getType();
+
+            //从sharePreferences中恢复对象
+            GetJson =sp.getString("cards","failCard");
+            cardSaved = gson.fromJson(GetJson,type);
+
+            //输出之前保存的对象
+            txvHello.setText("Saved cards : " + String.valueOf(cardSaved.count));
+
+
+        }catch (Exception e){
+            txvHello.setText(e.getMessage());
+        }
+
+
+    }
+
+    //清除输出
+    public void Clear(View V){
+
+        String StrLog;
+        TextView txvHello;
+        txvHello=findViewById(R.id.txtHello);
+        txvHello.setText("");
+
+        TextView txvTime;
+        txvTime=findViewById(R.id.txtTime);
+        txvTime.setText("");
+
+        EditText txvLo2;
+        txvLo2=findViewById(R.id.txtLOG2);
+        txvLo2.setText("");
 
     }
 
