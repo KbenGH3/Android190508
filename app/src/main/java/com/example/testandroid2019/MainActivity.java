@@ -4,6 +4,7 @@ package com.example.testandroid2019;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -23,13 +25,27 @@ import com.google.gson.reflect.TypeToken;
 import Cards.*;
 import Player.*;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Date;
 import java.util.Properties;
 import java.io.FileInputStream;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.SocketHandler;
 
 public class MainActivity extends AppCompatActivity {
+
+
+    //定义一个handler 来接收子线程的信息
+    Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +62,42 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
+
+        // 为按钮添加监听器，启动发送线程
+        // 添加以后原来的onclick事件就会失效
+//        Button send =findViewById(R.id.btnSend);
+//        send.setOnClickListener(new View.OnClickListener(){
+//            public void onClick(View view){
+//
+//                String strSendMsg;
+//                BufferedReader in;
+//                PrintWriter out;
+//
+//                TextView txtInput;
+//                txtInput=findViewById(R.id.btnInput);
+//
+//                strSendMsg=txtInput.getText().toString();
+////new Mythread(strSendMsg).start();
+//            }
+//                                }
+//
+//        );
+
+        //TODO 未完成 handler 的开发
+//                final TextView txtMsg;
+//                txtMsg=findViewById(R.id.txtHello);
+//
+//           handler = new Handler() {
+//               public void LogRecord(){
+//
+//               }
+//
+//            public  void handleMessage(Message msg) {
+//                txtMsg.setText(msg.obj.toString());
+//            }
+//        };
+
+
     }
 
     @Override
@@ -327,8 +379,6 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception e){
             txvHello.setText(e.getMessage());
         }
-
-
     }
 
     //清除输出
@@ -349,4 +399,179 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-}
+    //通过Socket 发送信息 (客户端）
+    //android 4.0以后必须通过 非主线程来建socket
+    public void SocketSend(View V) {
+
+        String strSendMsg;
+        BufferedReader in;
+        PrintWriter out;
+
+        TextView txvHello;
+        txvHello = findViewById(R.id.txtHello);
+
+        EditText txvLo2;
+        txvLo2 = findViewById(R.id.txtLOG2);
+
+        txvLo2.setText("start sending");
+//
+//        try {
+//            txvLo2.setText("before socket");
+//            Socket socket = new Socket("127.0.0.1", 9999);
+//            strSendMsg = txvHello.getText().toString();
+//
+//            txvLo2.setText(strSendMsg);
+//
+//            in = new BufferedReader(new InputStreamReader((socket.getInputStream())));
+//            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+//            out.println("hello socket!");
+//            out.flush();
+//
+//            in.close();
+//            out.close();
+//            socket.close();
+//
+//            txvLo2.setText("sent socket!");
+//
+//        } catch (Exception e) {
+//            txvHello.setText(e.getMessage());
+//            txvHello.setText("Exception");
+//        }
+
+
+
+        //建一个服务器线程
+        new ServerThread("ServerStart").start();
+
+        txvLo2.setText(txvLo2.getText()+ "\n" + "Server Start");
+        txvLo2.setSelection(txvLo2.length());
+
+        //建一个客户端线程
+        new MyThread("SocketStart").start();
+
+        txvLo2.setText(txvLo2.getText()+ "\n" + "Client Start");
+        txvLo2.setSelection(txvLo2.length());
+
+
+    }
+
+        //添加一个线程去发送socket信息 ? 但是socket 就一定要有线程才能发送吗？---> android 4.0 之后一定要子线程才能建socket
+        class MyThread extends Thread{
+            public String strTxt;
+
+            public MyThread(String strInTxt){
+                strTxt=strInTxt;
+            }
+
+            //每个线程都有一个run函数
+            //将本来准备在 send 按钮上做的逻辑全部搬到这个run函数里面
+            public void run(){
+
+                String strSendMsg;
+                BufferedReader in;
+                PrintWriter out;
+
+                TextView txvHello;
+                txvHello = findViewById(R.id.txtHello);
+
+                EditText txvLo2;
+                txvLo2 = findViewById(R.id.txtLOG2);
+
+                //可能不是在主线程里，所以不能对UI上的控件进行操作
+               // txvLo2.setText("start sending");
+
+                strSendMsg=txvHello.getText().toString();
+
+                try {
+                    //txvLo2.setText("before socket");
+                    Socket socket = new Socket("127.0.0.1", 9999);
+
+                    //txvLo2.setText("after socket");
+
+                    in = new BufferedReader(new InputStreamReader((socket.getInputStream())));
+                    out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+                    out.println("hello socket!");
+                    out.flush();
+
+                    in.close();
+                    out.close();
+                    socket.close();
+
+                    //txvLo2.setText("sent socket!");
+
+                } catch (Exception e) {
+                    //txvHello.setText(e.getMessage());
+                    //txvHello.setText("Exception");
+                }
+            }
+        }
+
+
+    //添加一个服务器线程 ，用来模拟一个服务器的主线程
+    class ServerThread extends Thread{
+        public String strTxt;
+
+        public ServerThread(String strInTxt){
+            strTxt=strInTxt;
+        }
+
+        //每个线程都有一个run函数
+        public void run(){
+
+            try {
+                ServerSocket service = new ServerSocket(9999);
+                while (true){
+                    //不断循环直到 accept 到客户端的连接
+                    Socket socket = service.accept();
+                    new Thread(new ResponseThread(socket)).start();
+                }
+
+            } catch (Exception e) {
+                //txvHello.setText(e.getMessage());
+                //txvHello.setText("Exception");
+            }
+        }
+    }
+
+    //添加一个服务器回答线程
+    class ResponseThread extends Thread{
+        Socket socket = null;
+
+        public ResponseThread(Socket socket){
+            this.socket=socket;
+        }
+
+        //每个线程都有一个run函数
+        public void run(){
+
+            InputStream input;
+            BufferedReader bff;
+            String line = null;
+
+            try {
+                input = socket.getInputStream();
+                bff = new BufferedReader(new InputStreamReader(input));
+
+                //关关闭socket 这里没有output，其实应该在output完以后才shutdown
+                socket.shutdownOutput();
+
+                // 读取客户端输入信息
+                while ((line = bff.readLine()) != null) {
+                    System.out.print(line);
+                }
+
+                //关闭输入输出流
+                bff.close();
+                input.close();
+                socket.close();
+
+            } catch (Exception e) {
+                //txvHello.setText(e.getMessage());
+                //txvHello.setText("Exception");
+            }
+        }
+    }
+
+    }
+
+
