@@ -37,7 +37,11 @@ import java.net.Socket;
 import java.util.Date;
 import java.util.Properties;
 import java.io.FileInputStream;
-import java.util.logging.Handler;
+
+//这个handler是错的，不是这个
+//import java.util.logging.Handler;
+import android.os.Handler;
+
 import java.util.logging.LogRecord;
 import java.util.logging.SocketHandler;
 
@@ -46,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
     //定义一个handler 来接收子线程的信息
     Handler handler;
+
+    TextView txtMsg;
+    //txtMsg=findViewById(R.id.txtHello);
+
+    Message msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,22 +92,24 @@ public class MainActivity extends AppCompatActivity {
 //
 //        );
 
-        //TODO 未完成 handler 的开发
-//                final TextView txtMsg;
-//                txtMsg=findViewById(R.id.txtHello);
-//
-//           handler = new Handler() {
-//               public void LogRecord(){
-//
-//               }
-//
-//            public  void handleMessage(Message msg) {
-//                txtMsg.setText(msg.obj.toString());
-//            }
-//        };
+        //准备一个Handler来处理信息
+                handler = new MyHandler();
 
+                //设定好文本档用来输出信息
+        txtMsg=findViewById(R.id.txtHello);
 
     }
+
+    //自建一个Handler
+    class MyHandler extends Handler{
+
+        //当它收到消息时就发送到文本档
+        public void handleMessage(Message msg){
+            txtMsg.setText(msg.obj.toString());
+        }
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -438,8 +449,6 @@ public class MainActivity extends AppCompatActivity {
 //            txvHello.setText("Exception");
 //        }
 
-
-
         //建一个服务器线程
         new ServerThread("ServerStart").start();
 
@@ -451,7 +460,6 @@ public class MainActivity extends AppCompatActivity {
 
         txvLo2.setText(txvLo2.getText()+ "\n" + "Client Start");
         txvLo2.setSelection(txvLo2.length());
-
 
     }
 
@@ -468,11 +476,16 @@ public class MainActivity extends AppCompatActivity {
             public void run(){
 
                 String strSendMsg;
+                String TargetIp;
+
                 BufferedReader in;
                 PrintWriter out;
 
-                TextView txvHello;
-                txvHello = findViewById(R.id.txtHello);
+                TextView txtHello;
+                txtHello = findViewById(R.id.txtHello);
+
+                TextView txvInput;
+                txvInput = findViewById(R.id.txtInput);
 
                 EditText txvLo2;
                 txvLo2 = findViewById(R.id.txtLOG2);
@@ -480,17 +493,18 @@ public class MainActivity extends AppCompatActivity {
                 //可能不是在主线程里，所以不能对UI上的控件进行操作
                // txvLo2.setText("start sending");
 
-                strSendMsg=txvHello.getText().toString();
+                //但是可以读取UI上的内容
+                TargetIp=txtHello.getText().toString();
+                strSendMsg=txvInput.getText().toString();
 
                 try {
                     //txvLo2.setText("before socket");
-                    Socket socket = new Socket("127.0.0.1", 9999);
-
+                    Socket socket = new Socket(TargetIp, 9999);
                     //txvLo2.setText("after socket");
 
                     in = new BufferedReader(new InputStreamReader((socket.getInputStream())));
                     out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-                    out.println("hello socket!");
+                    out.println(strSendMsg);
                     out.flush();
 
                     in.close();
@@ -557,7 +571,16 @@ public class MainActivity extends AppCompatActivity {
 
                 // 读取客户端输入信息
                 while ((line = bff.readLine()) != null) {
-                    System.out.print(line);
+                    //System.out.print(line);
+
+                    Bundle bundle=new Bundle();
+                    bundle.putString("msg",line);
+
+                    msg=handler.obtainMessage();
+                    msg.setData(bundle);
+                    //其实不用bundle也可以直接发送String
+                    msg.obj=line;
+                    handler.sendMessage(msg);
                 }
 
                 //关闭输入输出流
@@ -571,6 +594,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
 
     }
 
