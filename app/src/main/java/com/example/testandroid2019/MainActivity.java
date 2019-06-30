@@ -1,24 +1,15 @@
 package com.example.testandroid2019;
 
-
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.text.method.MovementMethod;
-import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -36,14 +27,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 import java.util.Properties;
-import java.io.FileInputStream;
 
 //这个handler是错的，不是这个
 //import java.util.logging.Handler;
 import android.os.Handler;
-
-import java.util.logging.LogRecord;
-import java.util.logging.SocketHandler;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     Handler handler;
 
     TextView txtMsg;
+    EditText txtLog;
+
     //txtMsg=findViewById(R.id.txtHello);
 
     Message msg;
@@ -62,15 +51,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         // 为按钮添加监听器，启动发送线程
         // 添加以后原来的onclick事件就会失效
@@ -86,18 +66,23 @@ public class MainActivity extends AppCompatActivity {
 //                txtInput=findViewById(R.id.btnInput);
 //
 //                strSendMsg=txtInput.getText().toString();
-////new Mythread(strSendMsg).start();
+//                new Mythread(strSendMsg).start();
 //            }
 //                                }
-//
 //        );
 
         //准备一个Handler来处理信息
-                handler = new MyHandler();
+        handler = new MyHandler();
 
-                //设定好文本档用来输出信息
+        //设定好文本档用来输出信息
         txtMsg=findViewById(R.id.txtHello);
+        txtLog=findViewById(R.id.txtLOG2);
 
+        //启动服务器线程
+        new ServerThread("ServerStart").start();
+
+        txtLog.setText(txtLog.getText()+ "\n" + "Server Start");
+        txtLog.setSelection(txtLog.length());
     }
 
     //自建一个Handler
@@ -157,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
         strInput= String.valueOf(txvInput.getText());
 
         TextView txvHello;
-        txvHello=findViewById(R.id.txtHello);
+        //为了配合后面的socket实验，改成在Time那里显示
+        txvHello=findViewById(R.id.txtTime);
         txvHello.setText(strInput);
 
     }
@@ -425,35 +411,12 @@ public class MainActivity extends AppCompatActivity {
         txvLo2 = findViewById(R.id.txtLOG2);
 
         txvLo2.setText("start sending");
-//
-//        try {
-//            txvLo2.setText("before socket");
-//            Socket socket = new Socket("127.0.0.1", 9999);
-//            strSendMsg = txvHello.getText().toString();
-//
-//            txvLo2.setText(strSendMsg);
-//
-//            in = new BufferedReader(new InputStreamReader((socket.getInputStream())));
-//            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-//            out.println("hello socket!");
-//            out.flush();
-//
-//            in.close();
-//            out.close();
-//            socket.close();
-//
-//            txvLo2.setText("sent socket!");
-//
-//        } catch (Exception e) {
-//            txvHello.setText(e.getMessage());
-//            txvHello.setText("Exception");
-//        }
 
-        //建一个服务器线程
-        new ServerThread("ServerStart").start();
-
-        txvLo2.setText(txvLo2.getText()+ "\n" + "Server Start");
-        txvLo2.setSelection(txvLo2.length());
+        //建一个服务器线程 移到程序启动
+//        new ServerThread("ServerStart").start();
+//
+//        txvLo2.setText(txvLo2.getText()+ "\n" + "Server Start");
+//        txvLo2.setSelection(txvLo2.length());
 
         //建一个客户端线程
         new MyThread("SocketStart").start();
@@ -481,8 +444,8 @@ public class MainActivity extends AppCompatActivity {
                 BufferedReader in;
                 PrintWriter out;
 
-                TextView txtHello;
-                txtHello = findViewById(R.id.txtHello);
+                TextView txtTime;
+                txtTime = findViewById(R.id.txtTime);
 
                 TextView txvInput;
                 txvInput = findViewById(R.id.txtInput);
@@ -494,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
                // txvLo2.setText("start sending");
 
                 //但是可以读取UI上的内容
-                TargetIp=txtHello.getText().toString();
+                TargetIp=txtTime.getText().toString();
                 strSendMsg=txvInput.getText().toString();
 
                 try {
@@ -510,8 +473,6 @@ public class MainActivity extends AppCompatActivity {
                     in.close();
                     out.close();
                     socket.close();
-
-                    //txvLo2.setText("sent socket!");
 
                 } catch (Exception e) {
                     //txvHello.setText(e.getMessage());
@@ -594,8 +555,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-
 
     }
 
